@@ -1,8 +1,14 @@
 # Smart Charge — recarga e manutenção preditiva
 
+**Trabalho feito em dupla**
+
+Pedro Carvalho Carrijo e Luiza Souza Santos
+
+**Turma:** Engenharia de Software
+
 Projeto acadêmico AIoT que evolui o monitoramento de vagas do primeiro bimestre para uma aplicação Web + IoT + IA. Mantém **três pontos de recarga** e acompanha o desgaste dos seus módulos de potência, com sensores de temperatura, corrente e tensão, controle de recarga e previsões de saúde e vida útil restante.
 
-Os equipamentos e as falhas são **simulados em Python**. Não é necessário ter ESP32, carregador físico, GPU, Python ou Node.js instalados na máquina de avaliação. O backend é FastAPI; Node.js é usado somente para compilar o frontend Vue/TypeScript.
+Os equipamentos e as falhas são **simulados em Python**. Não é necessário ter ESP32, carregador físico, GPU, Python ou Node.js instalados na sua máquina. O backend é FastAPI; Node.js é usado somente para compilar o frontend Vue/TypeScript.
 
 ![Dashboard das três estações, com controles e detalhes recolhidos](docs/images/dashboard.png)
 
@@ -41,7 +47,7 @@ mkdir -p secrets
 docker compose run --rm --no-deps db-init python -m services.show_credentials > secrets/usuarios-demo.txt
 ```
 
-Abra localmente `secrets/usuarios-demo.txt` e use a senha correspondente à conta escolhida. Esse arquivo é ignorado pelo Git e não deve ser enviado ao professor: na máquina dele serão geradas outras senhas.
+Abra localmente `secrets/usuarios-demo.txt` e use a senha correspondente à conta escolhida. Esse arquivo é ignorado pelo Git e não deve ser compartilhado: cada instalação gera suas próprias senhas.
 
 | Usuário | O que pode fazer |
 | --- | --- |
@@ -53,9 +59,9 @@ Os perfis compartilham o mesmo ambiente e as mesmas três estações: a divisão
 
 Atualizar a página exige novo login: o JWT fica apenas em memória. Os dados dos bancos, os modelos treinados e o estado do simulador permanecem nos volumes Docker.
 
-## Como o professor pode testar
+## Como testar
 
-Não depende de apresentação presencial. As etapas abaixo permitem avaliar o sistema diretamente na máquina do avaliador.
+Após iniciar os serviços, siga as etapas abaixo para explorar as funcionalidades e testar a integração entre recarga, sensores, mensageria e inteligência artificial.
 
 ### 1. Recarga, sensores e comandos
 
@@ -204,15 +210,15 @@ Para desenvolver o frontend (Node.js 24): `cd frontend`, `npm ci`, `npm run buil
 - **Parar preservando dados:** `docker compose down`. Para retomar: `docker compose up -d --build`.
 - **Não use `docker compose down -v` para uma parada comum:** remove dados, credenciais, conjuntos gerados e modelos persistidos.
 - **Porta 8080 ocupada:** copie `.env.example` para `.env`, ajuste `FRONTEND_PORT` e use a nova porta no navegador. Senhas não precisam ser preenchidas nesse arquivo.
-- **Sem previsões:** numa instalação nova, gere e treine no Laboratório; aguarde as primeiras leituras sob carga. Os dados/modelos existentes na máquina do autor não são copiados pelo Git.
+- **Sem previsões:** numa instalação nova, gere e treine no Laboratório; aguarde as primeiras leituras sob carga. Dados e modelos ficam nos volumes locais do Docker e não são distribuídos pelo Git.
 - **Ollama indisponível:** consulte `docker compose logs --tail 50 ollama-init ollama`. Aguarde o download; verifique internet e memória. A primeira resposta pode levar mais de um minuto em CPU.
 - **Docker lento/containers encerrando:** confira RAM destinada ao WSL2/Docker. Mantenha apenas um job de laboratório ativo e use os parâmetros iniciais.
 - **Telemetria ausente:** veja `docker compose logs --tail 50 simulator gateway writer api` e a tela Mensageria.
 - **Página antiga depois de atualização:** use Ctrl+F5 e faça login novamente.
 - **Banco/regras/API:** a documentação Swagger exige autenticação nas rotas protegidas. Faça login por `/api/auth/login` e use o JWT em **Authorize**, somente na instalação local.
 
-As interfaces administrativas dos bancos/brokers não são publicadas por padrão. O professor pode inspecionar serviços por `docker compose exec` e pela tela Mensageria; não há links que apontem para portas indisponíveis. Consulte os comandos de inspeção no [guia técnico](docs/guia-tecnico.md).
+As interfaces administrativas dos bancos/brokers não são publicadas por padrão. Você pode inspecionar os serviços por `docker compose exec` e pela tela Mensageria. Consulte os comandos de inspeção no [guia técnico](docs/guia-tecnico.md).
 
 ## Revisão dos requisitos
 
-A comparação detalhada com o enunciado, evidências no código e limites conhecidos está em [docs/revisao-requisitos.md](docs/revisao-requisitos.md). O [guia técnico](docs/guia-tecnico.md) aprofunda contratos de mensagens, treinamento, segurança e operação. O repositório mantém a evolução do primeiro bimestre no histórico Git; não são criados commits retroativos ou autoria fictícia.
+A comparação detalhada com o enunciado, evidências no código e limites conhecidos está em [docs/revisao-requisitos.md](docs/revisao-requisitos.md). O [guia técnico](docs/guia-tecnico.md) aprofunda contratos de mensagens, treinamento, segurança e operação. O histórico Git preserva a evolução do projeto desde o primeiro bimestre.

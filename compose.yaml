@@ -1,0 +1,354 @@
+name: smart-charge
+
+services:
+  bootstrap:
+    image: python:3.12-slim
+    command: [python, /bootstrap/init.py]
+    volumes:
+      - ./infra/bootstrap.py:/bootstrap/init.py:ro
+      - credentials:/credentials
+      - rabbit-config:/rabbit
+      - mqtt-config:/mqtt
+      - api-secrets:/service-secrets/api
+      - gateway-secrets:/service-secrets/gateway
+      - writer-secrets:/service-secrets/writer
+      - simulator-secrets:/service-secrets/simulator
+      - db-init-secrets:/service-secrets/db-init
+      - simulator-state:/simulator-state
+      - generator-secrets:/service-secrets/generator
+      - trainer-secrets:/service-secrets/trainer
+      - inference-secrets:/service-secrets/inference
+      - lab-artifacts:/artifacts
+    restart: "no"
+
+  mqtt-init:
+    image: eclipse-mosquitto:2.0
+    user: "0:0"
+    entrypoint: [/bin/sh, -ec]
+    command:
+      - |
+        if [ -f /generated/passwords.clear ]; then
+          cp /generated/passwords.clear /generated/passwords
+          chmod 600 /generated/passwords
+          mosquitto_passwd -U /generated/passwords
+          rm /generated/passwords.clear
+        fi
+        chmod 600 /generated/passwords /generated/acl /generated/healthcheck_password
+        chown -R 1883:1883 /generated /data
+    volumes:
+      - mqtt-config:/generated
+      - mqtt-data:/data
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+
+  postgres:
+    image: postgres:17-alpine
+    environment:
+      POSTGRES_USER: smartcharge
+      POSTGRES_DB: smartcharge
+      POSTGRES_PASSWORD_FILE: /credentials/postgres_password
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+      - credentials:/credentials:ro
+    healthcheck:
+      test: [CMD-SHELL, "pg_isready -U smartcharge -d smartcharge"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  influxdb:
+    image: influxdb:2.7
+    environment:
+      DOCKER_INFLUXDB_INIT_MODE: setup
+      DOCKER_INFLUXDB_INIT_USERNAME: smartcharge
+      DOCKER_INFLUXDB_INIT_PASSWORD_FILE: /credentials/influx_password
+      DOCKER_INFLUXDB_INIT_ADMIN_TOKEN_FILE: /credentials/influx_token
+      DOCKER_INFLUXDB_INIT_ORG: smartcharge
+      DOCKER_INFLUXDB_INIT_BUCKET: telemetry
+      DOCKER_INFLUXDB_INIT_RETENTION: 30d
+    volumes:
+      - influx-data:/var/lib/influxdb2
+      - influx-config:/etc/influxdb2
+      - credentials:/credentials:ro
+    healthcheck:
+      test: [CMD, influx, ping]
+      interval: 10s
+      timeout: 5s
+      retries: 18
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  rabbitmq:
+    image: rabbitmq:4.1-management-alpine
+    volumes:
+      - rabbit-data:/var/lib/rabbitmq
+      - rabbit-config:/etc/rabbitmq:ro
+    healthcheck:
+      test: [CMD, rabbitmq-diagnostics, -q, check_running]
+      interval: 10s
+      timeout: 10s
+      retries: 18
+    depends_on:
+      bootstrap:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  mosquitto:
+    image: eclipse-mosquitto:2.0
+    user: "1883:1883"
+    volumes:
+      - mqtt-config:/mosquitto/config:ro
+      - mqtt-data:/mosquitto/data
+    healthcheck:
+      test: [CMD-SHELL, "mosquitto_sub -h 127.0.0.1 -u healthcheck -P \"$$(cat /mosquitto/config/healthcheck_password)\" -t '$$SYS/broker/uptime' -C 1 -W 20 >/dev/null"]
+      interval: 30s
+      timeout: 25s
+      retries: 5
+    depends_on:
+      mqtt-init:
+        condition: service_completed_successfully
+    restart: unless-stopped
+
+  ollama:
+    image: ollama/ollama:0.13.5
+    volumes:
+      - ollama-data:/root/.ollama
+    environment:
+      OLLAMA_MAX_LOADED_MODELS: "1"
+      OLLAMA_NUM_PARALLEL: "1"
+      OLLAMA_KEEP_ALIVE: 30m
+    mem_limit: 4g
+    healthcheck:
+      test: [CMD, ollama, list]
+      interval: 15s
+      timeout: 10s
+      retries: 12
+    restart: unless-stopped
+
+  ollama-init:
+    image: ollama/ollama:0.13.5
+    entrypoint: [/bin/sh, -ec]
+    command: ['ollama pull "$${OLLAMA_MODEL}" && ollama run "$${OLLAMA_MODEL}" "Responda apenas: pronto"']
+    environment:
+      OLLAMA_HOST: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:1.5b}
+    depends_on:
+      ollama:
+        condition: service_healthy
+    restart: "no"
+
+  db-init:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.init_db]
+    volumes:
+      - db-init-secrets:/run/secrets:ro
+    depends_on:
+      postgres:
+        condition: service_healthy
+    restart: "no"
+
+  api:
+    image: smart-charge-api:local
+    pull_policy: build
+    build:
+      context: .
+      dockerfile: infra/api.Dockerfile
+    environment:
+      OLLAMA_URL: http://ollama:11434
+      OLLAMA_MODEL: ${OLLAMA_MODEL:-qwen2.5:1.5b}
+      SIMULATION_INTERVAL: ${SIMULATION_INTERVAL:-1}
+    volumes:
+      - api-secrets:/run/secrets:ro
+    healthcheck:
+      test: [CMD, python, -c, "import urllib.request; urllib.request.urlopen('http://127.0.0.1:8000/api/health')"]
+      interval: 10s
+      timeout: 5s
+      retries: 12
+    depends_on:
+      db-init:
+        condition: service_completed_successfully
+      postgres:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+
+  gateway:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.gateway]
+    volumes:
+      - gateway-secrets:/run/secrets:ro
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 30"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      api:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+      mosquitto:
+        condition: service_healthy
+    restart: unless-stopped
+
+  writer:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.writer]
+    volumes:
+      - writer-secrets:/run/secrets:ro
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 30"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      gateway:
+        condition: service_healthy
+      influxdb:
+        condition: service_healthy
+    restart: unless-stopped
+
+  simulator:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.simulator]
+    environment:
+      SIMULATION_INTERVAL: ${SIMULATION_INTERVAL:-1}
+      SIMULATION_SEED: ${SIMULATION_SEED:-42}
+    volumes:
+      - simulator-secrets:/run/secrets:ro
+      - simulator-state:/state
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 130"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      gateway:
+        condition: service_healthy
+    restart: unless-stopped
+
+  generator:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.lab_worker, generate]
+    environment:
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "1"
+    volumes:
+      - generator-secrets:/run/secrets:ro
+      - lab-artifacts:/artifacts
+    mem_limit: 1500m
+    cpus: 2
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 60"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      api:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  trainer:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.lab_worker, train]
+    environment:
+      OMP_NUM_THREADS: "2"
+      OPENBLAS_NUM_THREADS: "1"
+    volumes:
+      - trainer-secrets:/run/secrets:ro
+      - lab-artifacts:/artifacts
+    mem_limit: 2500m
+    cpus: 2
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 60"]
+      interval: 15s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      api:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  inference:
+    image: smart-charge-api:local
+    pull_policy: never
+    command: [python, -m, services.inference]
+    environment:
+      OMP_NUM_THREADS: "1"
+      OPENBLAS_NUM_THREADS: "1"
+      SIMULATION_INTERVAL: ${SIMULATION_INTERVAL:-1}
+    volumes:
+      - inference-secrets:/run/secrets:ro
+      - lab-artifacts:/artifacts:ro
+    mem_limit: 1g
+    cpus: 1
+    healthcheck:
+      test: [CMD, python, -c, "import time,pathlib; assert time.time()-pathlib.Path('/tmp/heartbeat').stat().st_mtime < 30"]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      api:
+        condition: service_healthy
+      rabbitmq:
+        condition: service_healthy
+    restart: unless-stopped
+
+  frontend:
+    build:
+      context: .
+      dockerfile: infra/frontend.Dockerfile
+    ports:
+      - "127.0.0.1:${FRONTEND_PORT:-8080}:8080"
+    healthcheck:
+      test: [CMD, wget, -q, --spider, http://127.0.0.1:8080/healthz]
+      interval: 10s
+      timeout: 5s
+      retries: 6
+    depends_on:
+      api:
+        condition: service_healthy
+    restart: unless-stopped
+
+volumes:
+  credentials:
+  rabbit-config:
+  mqtt-config:
+  postgres-data:
+  influx-data:
+  influx-config:
+  rabbit-data:
+  mqtt-data:
+  ollama-data:
+  api-secrets:
+  gateway-secrets:
+  writer-secrets:
+  simulator-secrets:
+  db-init-secrets:
+  simulator-state:
+  generator-secrets:
+  trainer-secrets:
+  lab-artifacts:
+  inference-secrets:

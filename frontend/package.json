@@ -6,16 +6,23 @@
   "scripts": {
     "dev": "vite",
     "build": "vue-tsc -b && vite build",
-    "preview": "vite preview"
+    "preview": "vite preview",
+    "format": "prettier --write src tests vite.config.ts",
+    "format:check": "prettier --check src tests vite.config.ts"
   },
   "dependencies": {
     "chart.js": "^4.4.7",
+    "markdown-it": "14.3.3",
+    "three": "0.170.0",
     "vue": "^3.5.13"
   },
   "devDependencies": {
+    "@types/markdown-it": "14.1.2",
+    "@types/three": "0.170.0",
     "@vitejs/plugin-vue": "^5.2.1",
+    "prettier": "3.6.2",
     "typescript": "~5.7.2",
     "vite": "^6.0.5",
-    "vue-tsc": "^2.2.0"
+    "vue-tsc": "3.3.14"
   }
 }

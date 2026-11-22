@@ -1,4 +1,4 @@
-﻿# Smart Charge — recarga e manutenção preditiva
+# Smart Charge — recarga e manutenção preditiva
 
 Projeto acadêmico AIoT que evolui o monitoramento de vagas do primeiro bimestre para uma aplicação Web + IoT + IA. Mantém **três pontos de recarga** e acompanha o desgaste dos seus módulos de potência, com sensores de temperatura, corrente e tensão, controle de recarga e previsões de saúde e vida útil restante.
 
@@ -13,7 +13,7 @@ A interface usa superfícies grafite, destaques em verde-lima e detalhes expans�
 Pré-requisitos: Git, Docker com Docker Compose e internet na primeira execução. No Windows, use Docker Desktop com WSL2 e containers Linux. Reserve **pelo menos 8 GB para Docker/WSL2**; a máquina de desenvolvimento tem 16 GB de RAM. O primeiro uso baixa imagens e o modelo local de linguagem e pode levar vários minutos. Geração e treinamento são limitados para evitar uso excessivo de memória.
 
 ```bash
-git clone --branch desenvolvimento-bimestre2 https://github.com/LuizaZants/smart-charge.git
+git clone --branch desenvolvimento-bimestre2 https://github.com/pedroccarrijo/smart-charge.git
 cd smart-charge
 docker compose up -d --build
 ```
@@ -48,6 +48,8 @@ Abra localmente `secrets/usuarios-demo.txt` e use a senha correspondente à cont
 | `visualizador` | Consultar dashboard, histórico, 3D, insights, laboratório e mensageria; conversar com o assistente. |
 | `operador` | Tudo acima, controlar recargas, simular veículos/falhas e inspecionar a fila de falhas sem remover mensagens. |
 | `administrador` | Tudo acima, editar dispositivos, gerar dados, treinar/selecionar modelos e consultar auditoria. |
+
+Os perfis compartilham o mesmo ambiente e as mesmas três estações: a divisão é por **permissão de ação**, não por proprietário da estação. O visualizador pode consultar os dados operacionais e resultados de treinamento, mas não altera recargas, cadastros ou modelos. O conteúdo da DLQ é restrito a operador/administrador; a auditoria, somente ao administrador. Senhas, chaves e credenciais internas não são disponibilizadas pelas telas a nenhum perfil. Essas restrições também são verificadas pela API (HTTP 403), não apenas pelos botões da interface. No assistente, o contexto de conversas anteriores é limitado ao próprio usuário e à conversa atual.
 
 Atualizar a página exige novo login: o JWT fica apenas em memória. Os dados dos bancos, os modelos treinados e o estado do simulador permanecem nos volumes Docker.
 

@@ -16,6 +16,8 @@
   const DigitalTwin = defineAsyncComponent(() => import('./components/DigitalTwin.vue'))
 
   Chart.register(ArcElement, DoughnutController, Legend, Tooltip)
+  Chart.defaults.font.family = "'Inter Variable', Arial, sans-serif"
+  Chart.defaults.font.size = 13
 
   type StatusPonto = 'DISPONIVEL' | 'EM USO' | 'SEM DADOS'
 

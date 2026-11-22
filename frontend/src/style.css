@@ -1,4 +1,4 @@
-﻿/* Shared visual system: charcoal surfaces, lime accents and calm data hierarchy. */
+/* Shared visual system: charcoal surfaces, lime accents and calm data hierarchy. */
 * {
   margin: 0;
   padding: 0;
@@ -21,10 +21,13 @@
 }
 body {
   min-height: 100vh;
-  font-family: 'Segoe UI', Arial, sans-serif;
+  font-family: 'Inter Variable', Arial, sans-serif;
   background: var(--fundo);
   color: var(--texto);
-  font-size: 14px;
+  font-size: 16px;
+  line-height: 1.6;
+  font-optical-sizing: auto;
+  text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
 }
 button,
@@ -81,7 +84,7 @@ h2,
 h3,
 h4 {
   font-weight: 600;
-  letter-spacing: -0.035em;
+  letter-spacing: -0.02em;
 }
 h2 {
   font-size: 25px;
@@ -123,7 +126,7 @@ dd {
 }
 .marca h1 {
   font-size: 26px;
-  letter-spacing: -0.06em;
+  letter-spacing: -0.02em;
   font-weight: 650;
 }
 .brand-dot {
@@ -132,13 +135,13 @@ dd {
 .marca p {
   margin-top: 3px;
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
 }
 .conta-atual {
   display: flex;
   gap: 18px;
   align-items: center;
-  font-size: 12px;
+  font-size: 14px;
   color: var(--texto-secundario);
 }
 .conta-atual button {
@@ -147,7 +150,7 @@ dd {
   background: transparent;
 }
 .sistema-online {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--texto-secundario);
 }
 .container {
@@ -169,19 +172,19 @@ dd {
 }
 .titulo-pagina > button {
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .subtitulo,
 .eyebrow,
 .identificador {
   color: var(--verde);
-  font-size: 10px;
+  font-size: 12px;
   font-weight: 600;
-  letter-spacing: 0.16em;
+  letter-spacing: 0.06em;
 }
 .estado-conexao {
   color: var(--texto-secundario);
-  font-size: 12px;
+  font-size: 14px;
   margin: 12px 0;
 }
 .titulo-pagina .estado-conexao {
@@ -213,7 +216,7 @@ dd {
   border-color: transparent;
   color: #b4baa9;
   background: transparent;
-  font-size: 12px;
+  font-size: 14px;
   padding: 9px 15px;
   min-height: 36px;
 }
@@ -245,19 +248,19 @@ dd {
 }
 .hero-copy .eyebrow {
   color: #42551a;
-  font-size: 9px;
+  font-size: 12px;
 }
 .hero-copy h2 {
   font-size: clamp(30px, 3vw, 43px);
   line-height: 1.03;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.02em;
   margin: 22px 0 14px;
 }
 .hero-copy h2 span {
   color: #4e611e;
 }
 .hero-copy p {
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.65;
   max-width: 230px;
 }
@@ -266,7 +269,7 @@ dd {
   color: var(--texto);
   background: #1b2012;
   border-color: #1b2012;
-  font-size: 11px;
+  font-size: 12px;
 }
 .hero-copy button span {
   margin-left: 20px;
@@ -282,8 +285,8 @@ dd {
 .hero-footnote {
   display: block;
   margin-top: 25px;
-  font-size: 8px;
-  letter-spacing: 0.16em;
+  font-size: 12px;
+  letter-spacing: 0.06em;
   color: #52651f;
 }
 .overview-stats {
@@ -304,22 +307,22 @@ dd {
 }
 .metric-index {
   color: #9aab75;
-  letter-spacing: 0.12em;
-  font-size: 8px;
+  letter-spacing: 0.06em;
+  font-size: 12px;
 }
 .metric-card > strong {
   font-size: 39px;
-  font-weight: 400;
-  letter-spacing: -0.06em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
   line-height: 1.1;
 }
 .metric-card small {
   color: var(--texto-secundario);
-  font-size: 13px;
+  font-size: 14px;
   letter-spacing: 0;
 }
 .metric-card > span:last-of-type {
-  font-size: 11px;
+  font-size: 12px;
   color: var(--texto-secundario);
 }
 .connection-dots {
@@ -348,7 +351,7 @@ dd {
   background: transparent;
   border-radius: 0;
   text-align: left;
-  font-size: 11px;
+  font-size: 12px;
   color: var(--verde);
 }
 .text-action:hover:not(:disabled) {
@@ -368,7 +371,7 @@ dd {
 }
 .section-caption {
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
 }
 .estacoes {
   display: grid;
@@ -410,13 +413,13 @@ dd {
 }
 .card-topo .identificador {
   color: var(--texto-secundario);
-  font-size: 8px;
+  font-size: 12px;
 }
 .numero-estacao {
   font-size: 41px;
   color: #657149;
-  font-weight: 300;
-  letter-spacing: -0.06em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 .area-status {
   margin: 0 22px;
@@ -442,14 +445,14 @@ dd {
   display: none;
 }
 .area-status strong {
-  font-size: 11px;
+  font-size: 12px;
   letter-spacing: 0.06em;
   color: #dee7cb;
 }
 .area-status p {
   grid-column: 2;
   margin-top: 4px;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--texto-secundario);
   line-height: 1.5;
 }
@@ -465,12 +468,12 @@ dd {
   justify-content: space-between;
   gap: 10px;
   margin: 16px 22px 0;
-  font-size: 10px;
+  font-size: 12px;
   color: var(--texto-secundario);
 }
 .ultima-atualizacao strong {
   color: #c8cfbc;
-  font-weight: 400;
+  font-weight: 500;
   white-space: nowrap;
 }
 .telemetria {
@@ -483,12 +486,12 @@ dd {
 }
 .telemetria dt {
   color: var(--texto-secundario);
-  font-size: 10px;
+  font-size: 12px;
 }
 .telemetria dd {
   margin-top: 6px;
   font-size: 20px;
-  letter-spacing: -0.04em;
+  letter-spacing: -0.02em;
 }
 .telemetria > dl > div:last-child {
   grid-column: 1 / -1;
@@ -519,26 +522,26 @@ dd {
 }
 .estimativa {
   margin: 18px 0 7px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .telemetria small {
   color: var(--texto-secundario);
-  font-size: 10px;
+  font-size: 12px;
   line-height: 1.6;
   display: block;
 }
 .protecao-termica {
   color: #ffbd69;
   margin-top: 16px;
-  font-size: 12px;
+  font-size: 14px;
 }
 summary {
   cursor: pointer;
   color: #c5ceaf;
   font-weight: 500;
   padding: 10px 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 details[open] > summary {
   margin-bottom: 12px;
@@ -552,7 +555,7 @@ details[open] > summary {
 .technical-details p,
 .simulation-controls p {
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.7;
   margin-top: 10px;
 }
@@ -574,7 +577,7 @@ details[open] > summary {
   background: #c9df8c;
   border-color: #c9df8c;
   color: #18200d;
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 600;
 }
 .controles > button:hover:not(:disabled) {
@@ -588,14 +591,14 @@ details[open] > summary {
 .simulation-controls > button,
 .simulation-controls > select {
   margin: 8px 6px 8px 0;
-  font-size: 11px;
+  font-size: 12px;
 }
 .simulation-controls label,
 .controles small {
   width: 100%;
   display: block;
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
   margin-top: 10px;
 }
 .acoes-falha {
@@ -604,7 +607,7 @@ details[open] > summary {
   gap: 8px;
 }
 .acoes-falha button {
-  font-size: 11px;
+  font-size: 12px;
 }
 .painel-inferior {
   display: grid;
@@ -632,12 +635,12 @@ details[open] > summary {
   gap: 10px;
 }
 .evento strong {
-  font-size: 12px;
+  font-size: 14px;
   font-weight: 500;
 }
 .evento p,
 .hora-evento {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--texto-secundario);
   margin-top: 4px;
 }
@@ -660,7 +663,7 @@ details[open] > summary {
   grid-column: 1/-1;
   color: var(--texto-secundario);
   padding: 24px 0;
-  font-size: 12px;
+  font-size: 14px;
 }
 .icone-historico {
   color: var(--verde);
@@ -677,7 +680,7 @@ details[open] > summary {
   padding: 15px;
   border-top: 1px solid var(--borda);
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
 }
 .resumo-grafico b {
   color: var(--texto);
@@ -702,12 +705,12 @@ details[open] > summary {
   width: 100%;
   text-align: left;
   border-collapse: collapse;
-  font-size: 12px;
+  font-size: 14px;
 }
 .painel-dados th {
   color: #c2cbb0;
   font-weight: 500;
-  font-size: 11px;
+  font-size: 12px;
 }
 .painel-dados th,
 .painel-dados td {
@@ -733,12 +736,12 @@ details[open] > summary {
   gap: 12px;
 }
 .bus-indicators span {
-  font-size: 10px;
+  font-size: 12px;
   color: var(--texto-secundario);
 }
 .bus-indicators strong {
   font-size: 30px;
-  font-weight: 400;
+  font-weight: 500;
 }
 .queue-paused {
   color: #ffbd69;
@@ -759,7 +762,7 @@ details[open] > summary {
   overflow-wrap: anywhere;
   max-height: 320px;
   margin-top: 14px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .grade-laboratorio {
   min-width: 0;
@@ -774,14 +777,14 @@ details[open] > summary {
 .grade-laboratorio legend {
   color: #c4d7a1;
   padding: 0 8px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .grade-laboratorio label,
 .catalog-form label {
   display: flex;
   flex-direction: column;
   gap: 8px;
-  font-size: 12px;
+  font-size: 14px;
   color: #c9d1bb;
 }
 .grade-laboratorio input,
@@ -821,7 +824,7 @@ details[open] > summary {
 }
 .laboratorio li {
   margin: 8px 20px;
-  font-size: 12px;
+  font-size: 14px;
 }
 .laboratorio .resultado-aprovado {
   color: var(--verde);
@@ -863,7 +866,7 @@ details[open] > summary {
   margin-top: 0;
 }
 .insight-card p {
-  font-size: 12px;
+  font-size: 14px;
   margin: 14px 0;
   line-height: 1.65;
   overflow-wrap: anywhere;
@@ -888,16 +891,16 @@ details[open] > summary {
 }
 .indicadores-ia dt {
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
 }
 .indicadores-ia dd {
   font-size: 34px;
   margin: 10px 0;
-  font-weight: 350;
-  letter-spacing: -0.05em;
+  font-weight: 500;
+  letter-spacing: -0.02em;
 }
 .indicadores-ia small {
-  font-size: 12px;
+  font-size: 14px;
   color: var(--texto-secundario);
 }
 .tendencia-saude,
@@ -911,7 +914,7 @@ details[open] > summary {
 .twin-catalog p {
   margin: 14px 0;
   color: var(--texto-secundario);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.7;
 }
 .twin-layout {
@@ -945,7 +948,7 @@ details[open] > summary {
   right: 0;
   background: #14170fdf;
   padding: 12px;
-  font-size: 10px;
+  font-size: 12px;
   color: #bdc9a8;
   pointer-events: none;
 }
@@ -966,14 +969,14 @@ details[open] > summary {
 .twin-detail code {
   display: block;
   color: var(--texto-secundario);
-  font-size: 11px;
+  font-size: 12px;
   overflow-wrap: anywhere;
   margin-top: 8px;
 }
 .twin-reading {
   display: block;
   font-size: 30px;
-  font-weight: 400;
+  font-weight: 500;
   margin: 24px 0;
 }
 .twin-command {
@@ -990,7 +993,7 @@ details[open] > summary {
   margin: 18px 0;
 }
 .twin-legend {
-  font-size: 11px;
+  font-size: 12px;
 }
 .twin-component-group h4 {
   width: 100%;
@@ -1034,7 +1037,7 @@ footer {
   border-top: 1px solid var(--borda);
   padding-top: 24px;
   color: #8e987e;
-  font-size: 10px;
+  font-size: 12px;
   display: flex;
   justify-content: space-between;
   gap: 15px;
@@ -1053,7 +1056,7 @@ footer span {
 .login-intro h2 {
   font-size: clamp(40px, 5.5vw, 70px);
   line-height: 1.03;
-  letter-spacing: -0.065em;
+  letter-spacing: -0.02em;
   margin: 24px 0;
 }
 .login-intro h2 span {
@@ -1083,7 +1086,7 @@ footer span {
   border: 1px solid var(--borda);
   padding: 6px 9px;
   border-radius: 20px;
-  font-size: 9px;
+  font-size: 12px;
   color: #b3bfa2;
 }
 .login-card {
@@ -1102,11 +1105,11 @@ footer span {
 .login-card p,
 .login-card small {
   color: var(--texto-secundario);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .login-card label {
-  font-size: 12px;
+  font-size: 14px;
   color: #c9d1bb;
 }
 .login-card input {
@@ -1124,7 +1127,7 @@ footer span {
 }
 .login-help summary {
   color: var(--verde);
-  font-size: 12px;
+  font-size: 14px;
   line-height: 1.6;
 }
 .login-help p {
@@ -1133,7 +1136,7 @@ footer span {
 .login-help > strong {
   display: block;
   margin-top: 16px;
-  font-size: 11px;
+  font-size: 12px;
 }
 .login-help pre {
   white-space: pre-wrap;
@@ -1142,7 +1145,7 @@ footer span {
   padding: 12px;
   border-radius: 8px;
   margin-top: 8px;
-  font-size: 11px;
+  font-size: 12px;
   line-height: 1.6;
 }
 .login-help code {
@@ -1202,7 +1205,7 @@ footer span {
     font-size: 29px;
   }
   .metric-index {
-    font-size: 7px;
+    font-size: 12px;
   }
   .connection-dots {
     display: none;
@@ -1246,7 +1249,7 @@ footer span {
   }
   .conta-atual {
     gap: 8px;
-    font-size: 10px;
+    font-size: 12px;
     flex-wrap: wrap;
     justify-content: end;
     max-width: 145px;
@@ -1257,7 +1260,7 @@ footer span {
   .conta-atual button {
     min-height: 29px;
     padding: 5px 12px;
-    font-size: 10px;
+    font-size: 12px;
   }
   .container {
     margin-top: 25px;
@@ -1274,13 +1277,13 @@ footer span {
     font-size: 29px;
   }
   .titulo-pagina > p:not(.subtitulo) {
-    font-size: 12px;
+    font-size: 14px;
   }
   .abas {
     gap: 3px;
   }
   .abas button {
-    font-size: 10px;
+    font-size: 12px;
     padding: 8px 10px;
     min-height: 34px;
   }
@@ -1341,7 +1344,7 @@ footer span {
     height: 370px;
   }
   .twin-toolbar button {
-    font-size: 11px;
+    font-size: 12px;
   }
   .login-container {
     margin-top: 35px;

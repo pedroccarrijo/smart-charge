@@ -124,7 +124,7 @@ export function createTwinScene(
     ctx.fillStyle = 'rgba(20,24,15,.9)'
     ctx.fillRect(0, 0, 512, 100)
     ctx.fillStyle = '#e5fff6'
-    ctx.font = 'bold 48px system-ui'
+    ctx.font = '600 48px "Inter Variable", Arial, sans-serif'
     ctx.textAlign = 'center'
     ctx.textBaseline = 'middle'
     ctx.fillText(text, 256, 50)

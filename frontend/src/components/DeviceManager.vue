@@ -220,6 +220,6 @@
   p {
     margin: 12px 0;
     line-height: 1.6;
-    font-size: 13px;
+    font-size: 14px;
   }
 </style>

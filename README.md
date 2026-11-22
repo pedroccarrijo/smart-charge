@@ -16,6 +16,8 @@ Os equipamentos e as falhas são **simulados em Python**. Não é necessário te
 
 A interface usa superfícies grafite, destaques em verde-lima e detalhes expansíveis. O resumo reúne conexão, disponibilidade, potência medida nas estações online e alertas registrados; indicadores indisponíveis não são substituídos por números de demonstração. A ilustração do carregador é decorativa; a cena Three.js e seus estados continuam recebendo dados ao vivo.
 
+A interface usa a fonte **Inter**, distribuída junto com o frontend para manter a leitura consistente sem consultar serviços externos de fontes. A licença está em [Inter-LICENSE.txt](frontend/public/fonts/Inter-LICENSE.txt).
+
 ## Comece aqui
 
 Pré-requisitos: Git, Docker com Docker Compose e internet na primeira execução. No Windows, use Docker Desktop com WSL2 e containers Linux. Reserve **pelo menos 8 GB para Docker/WSL2**; a máquina de desenvolvimento tem 16 GB de RAM. O primeiro uso baixa imagens e o modelo local de linguagem e pode levar vários minutos. Geração e treinamento são limitados para evitar uso excessivo de memória.

@@ -6,6 +6,8 @@ Pedro Carvalho Carrijo e Luiza Souza Santos
 
 **Turma:** Engenharia de Software
 
+> **Primeiro acesso:** os usuários são `visualizador`, `operador` e `administrador`. As senhas são geradas automaticamente na sua máquina, não ficam no GitHub e não são as mesmas de outra instalação. Siga a seção [Login: usuários e senhas](#login-usuários-e-senhas) para obter o arquivo local e entrar.
+
 Projeto acadêmico AIoT que evolui o monitoramento de vagas do primeiro bimestre para uma aplicação Web + IoT + IA. Mantém **três pontos de recarga** e acompanha o desgaste dos seus módulos de potência, com sensores de temperatura, corrente e tensão, controle de recarga e previsões de saúde e vida útil restante.
 
 Os equipamentos e as falhas são **simulados em Python**. Não é necessário ter ESP32, carregador físico, GPU, Python ou Node.js instalados na sua máquina. O backend é FastAPI; Node.js é usado somente para compilar o frontend Vue/TypeScript.
@@ -32,22 +34,38 @@ docker compose ps -a
 
 Os serviços contínuos devem ficar `healthy`. As tarefas `bootstrap`, `mqtt-init`, `db-init` e `ollama-init` terminam com código `0`: isso é esperado. O download inicial do Ollama pode continuar enquanto a interface já está disponível.
 
-### Obter as senhas da própria instalação
+## Login: usuários e senhas
 
-Não há senhas padrão nem senhas no repositório. Cada instalação gera suas credenciais. No **PowerShell**, na raiz do projeto:
+**Não é necessário pedir uma senha aos autores.** Após subir o Compose, você obtém as três senhas da sua instalação com os comandos abaixo. Eles consultam as credenciais já geradas; não criam senhas novas a cada execução.
+
+### Windows — PowerShell
+
+Na pasta `smart-charge`, execute:
 
 ```powershell
 powershell -ExecutionPolicy Bypass -File .\infra\export-demo-credentials.ps1
+notepad .\secrets\usuarios-demo.txt
 ```
 
-No **Linux/macOS**, na raiz:
+### Linux/macOS — terminal
+
+Na pasta `smart-charge`, execute:
 
 ```bash
 mkdir -p secrets
 docker compose run --rm --no-deps db-init python -m services.show_credentials > secrets/usuarios-demo.txt
+cat secrets/usuarios-demo.txt
 ```
 
-Abra localmente `secrets/usuarios-demo.txt` e use a senha correspondente à conta escolhida. Esse arquivo é ignorado pelo Git e não deve ser compartilhado: cada instalação gera suas próprias senhas.
+### Entrar na aplicação
+
+1. O arquivo `secrets/usuarios-demo.txt` contém uma linha por conta, no formato **`usuário: senha`**. Ele é criado localmente pelos comandos acima e não vem no download do GitHub.
+2. Abra **http://localhost:8080**.
+3. No campo **Usuário**, digite `administrador` para testar todas as funções; para conferir os outros papéis, use `operador` ou `visualizador`.
+4. No campo **Senha**, cole somente a senha que aparece depois de `:` na linha da conta escolhida, sem incluir o nome do usuário.
+5. Clique em **Entrar**. Para trocar de perfil, clique em **Sair** e entre com a outra conta.
+
+O arquivo é ignorado pelo Git e não deve ser compartilhado. **Não utilize as senhas de outra máquina.** Ao parar e reiniciar o Compose preservando os volumes, as senhas permanecem iguais. Se houver erro ao exportar, confira `docker compose ps -a`: a tarefa `db-init` deve ter terminado com código `0` antes de executar a exportação.
 
 | Usuário | O que pode fazer |
 | --- | --- |

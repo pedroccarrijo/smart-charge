@@ -501,6 +501,24 @@
       <span class="eyebrow">SEU PAINEL DE OPERAÇÃO</span>
       <h2>Entrar no Smart Charge</h2>
       <p>Use as credenciais geradas na instalação.</p>
+      <details class="login-help">
+        <summary>Primeiro acesso? Veja como obter as senhas</summary>
+        <p>Após subir o Docker Compose, execute na pasta do projeto:</p>
+        <strong>Windows · PowerShell</strong>
+        <pre><code>powershell -ExecutionPolicy Bypass -File .\infra\export-demo-credentials.ps1</code></pre>
+        <strong>Linux / macOS · terminal</strong>
+        <pre><code>mkdir -p secrets
+docker compose run --rm --no-deps db-init python -m services.show_credentials &gt; secrets/usuarios-demo.txt</code></pre>
+        <p>
+          Abra <code>secrets/usuarios-demo.txt</code>. Escolha uma conta e cole no campo Senha
+          somente o texto depois de <code>:</code> na linha correspondente.
+        </p>
+        <p>
+          As contas são <strong>visualizador</strong>, <strong>operador</strong> e
+          <strong>administrador</strong>. Para testar todas as funções, use administrador. Cada
+          instalação tem suas próprias senhas.
+        </p>
+      </details>
       <label for="usuario">Usuário</label>
       <input id="usuario" v-model="loginUsuario" autocomplete="username" required maxlength="64" />
       <label for="senha">Senha</label>

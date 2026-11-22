@@ -1115,6 +1115,39 @@ footer span {
 .login-card button {
   margin-top: 6px;
 }
+.login-help {
+  min-width: 0;
+  padding: 10px 14px;
+  border: 1px solid #667e32;
+  border-radius: 12px;
+  background: var(--verde-fundo);
+}
+.login-help summary {
+  color: var(--verde);
+  font-size: 12px;
+  line-height: 1.6;
+}
+.login-help p {
+  margin: 12px 0;
+}
+.login-help > strong {
+  display: block;
+  margin-top: 16px;
+  font-size: 11px;
+}
+.login-help pre {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  background: #151713;
+  padding: 12px;
+  border-radius: 8px;
+  margin-top: 8px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+.login-help code {
+  overflow-wrap: anywhere;
+}
 @media (max-width: 1100px) {
   .overview-grid {
     grid-template-columns: 1fr 1fr;
